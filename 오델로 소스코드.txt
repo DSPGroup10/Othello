@@ -1,0 +1,553 @@
+/* 오델로 게임 (제작 : LEGO(hosung337))
+ 
+ 	제작 기간 : 2주 정도
+	소스 길이(주석 미포함) : 542줄
+	
+	*현재 소스코드에는 주석이 없습니다.
+	주석을 달기 귀찮아서 달지 않았습니다.
+	
+	*이 소스를 배포하는건 허용하나
+	이 소스를 그대로 가져다 게임을 만들고
+	자기가 만든 것이라고 하는 것 즉 무단도용을 금합니다.*/
+#include <stdio.h>
+#include <windows.h>
+#include <conio.h>
+
+int trueorfalse = 1;
+int map[8][8] = {
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,2,1,0,0,0},
+{0,0,0,1,2,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+{0,0,0,0,0,0,0,0},
+};
+int number = 0;
+int giveup=0;
+
+void gotoxy(int x, int y);
+int CheckDoll(int ax, int ay);
+int Game(int ax, int ay, int dollcolor);
+void DrawArrayDoll(int dollcolor);
+int DrawDoll(int ax, int ay, int x, int y);
+void CheckDollNumber();
+void firstdoll();
+
+int main()
+{
+	int i,j,e,o; 
+	int x,y;
+	int u,r;
+	int ax,ay; 
+	int blacknb=0,whitenb=0; 
+	char keycode;
+	int dollcolor;
+	
+	gotoxy(10,1);
+	printf("* 오델로 게임 OTHELLO GAME *   제작자 : LEGO(hosung337)");
+	gotoxy(10,3);
+	
+	for(j=3;j<=10;j++)
+	{
+	for(i=10;i<=25;i++)
+	{
+		gotoxy(i,j);
+		printf(".");
+	}	
+	}
+	gotoxy(16,7);
+	x=16;
+	y=7;
+	ax=3;
+	ay=4;
+	firstdoll();
+	gotoxy(15,16);
+	printf("검은돌 차례"); 
+	gotoxy(15,20);
+	printf("수 넘기기 : z키");
+	gotoxy(16,7);
+	while(1)
+	{
+		for(e=0;e<8;e++)
+		{
+			for(o=0;o<8;o++)
+			{
+				if(map[e][o]==1||map[e][o]==2)
+					number++;
+			}
+		}
+		
+		if(number==64)
+		{
+			CheckDollNumber();
+			system("pause>nul");
+			return 0;
+		}
+		else
+			number=0;
+		for(u=0;u<8;u++)
+		{
+			for(r=0;r<8;r++)
+			{
+				if(map[u][r]==1)
+					blacknb++;
+				else if(map[u][r]==2)
+					whitenb++;
+			}
+		}
+		if(blacknb==0||whitenb==0)
+		{
+			gotoxy(15,19);
+			if(blacknb==0)
+				printf("흰 돌 승리!");
+			else if(whitenb==0)
+				printf("검은 돌 승리!");
+			system("pause>nul");
+			return 0;
+		}
+		blacknb=0;
+		whitenb=0;
+		if (_kbhit())
+		{
+			keycode = _getch();
+			if(keycode==75)
+			{
+				gotoxy(x-2, y);
+				 x=x-2;
+				 ax=ax-1;
+			}
+			if(keycode==77)
+			{
+				gotoxy(x+2,y);
+				x=x+2;
+				ax=ax+1;
+			}
+			if(keycode==72)
+			{
+				gotoxy(x,y-1);
+				y=y-1;
+				ay=ay-1;
+			}
+			if(keycode==80)
+			{
+				gotoxy(x,y+1);
+				y=y+1;
+				ay=ay+1;
+			}
+			if(x>=26)
+			{
+				gotoxy(24,y);
+				x=24;  
+				ax=7;				
+			}
+			if(x<=8)
+			{
+				gotoxy(10,y);
+				x=10;
+				ax=0;				
+			}
+			if(y<=3)
+			{
+				gotoxy(x,3);
+				y=3;
+				ay=0;		
+			}
+			if(y>=10)
+			{
+				gotoxy(x,10);
+				y=10;
+				ay=7;				
+			}
+			if(keycode=='z')
+			{
+				if(trueorfalse==1)
+				{
+					trueorfalse=0;
+					gotoxy(15,16);
+					printf("흰 돌 차례");
+				}
+				else if(trueorfalse==0)
+				{
+					trueorfalse=1;
+					gotoxy(15,16);
+					printf("검은돌 차례");
+				}
+				giveup++;
+				if(giveup==4)
+				{
+					CheckDollNumber();
+					system("pause>nul");
+					return 0;
+				}
+				gotoxy(x,y);
+			}
+			if(keycode==13)
+			{
+				if(CheckDoll(ax,ay)==0)
+					dollcolor = DrawDoll(ax,ay,x,y);
+				gotoxy(x,y);
+			}			
+		}
+	}
+}
+int Game(int ax, int ay, int dollcolor)
+{
+	int endx,endy;
+	endx=0;
+	endy=0;
+	int i,j;
+	int dolltrue=0;
+	int tester[4]={0}; 
+	int tester2[4]={0};
+	int tester3[4]={0};
+	int tester4[4]={0};
+	int tester5[4]={0};
+	int PlusOneOrNot[4]={0};
+	int ArrayIndex=0;
+	int ere,dre;
+	ere=0;
+	dre=0;
+	int g;
+	if(map[ax+1][ay]!=dollcolor)
+	{
+		if(ax!=7)
+		{
+			if(map[ax+1][ay]!=0)
+			{
+				for(j=ax+1;j<8;j++)
+				{
+					if(map[j][ay]==0||map[j][ay]>2)
+					{
+						endx=ax;
+						break;
+					}
+					if(map[j][ay]==dollcolor)
+					{
+						endx=j;
+						break;	
+					}		
+				}
+				for(i=ax+1;i<endx+1;i++)
+				{
+					if(map[i][ay]!=dollcolor)
+					{
+						map[i][ay]=dollcolor;	
+						dolltrue=1;
+					}
+				}
+			}
+		}
+	}
+	if(map[ax-1][ay]!=dollcolor)
+	{
+		if(ax!=0)
+		{
+			if(map[ax-1][ay]!=0)
+			{
+				for(j=ax-1;j>=0;j--)
+				{
+					if(map[j][ay]==0)
+					{
+						endx=ax;
+						break;
+					}
+					if(map[j][ay]==dollcolor)
+					{
+						endx=j;
+						break;	
+					}		
+				}
+				for(i=ax-1;i>endx-1;i--)
+				{
+					if(map[j][ay]!=dollcolor)
+						break;
+					if(map[i][ay]!=dollcolor)
+					{
+						map[i][ay]=dollcolor;
+						dolltrue=1;	
+					}
+				}
+			}
+		}
+	}
+
+	if(map[ax][ay-1]!=dollcolor)
+	{
+		if(ay!=0)
+		{
+			if(map[ax][ay-1]!=0)
+			{
+				for(j=ay-1;j>=0;j--)
+				{
+					if(map[ax][j]==0)
+					{
+						endy=ay;
+						break;
+					}
+					if(map[ax][j]==dollcolor)
+					{
+						endy=j;
+						break;	
+					}		
+				}
+				for(i=ay-1;i>endy-1;i--)
+				{
+					if(map[ax][j]!=dollcolor)
+						break;
+					if(map[ax][i]!=dollcolor)
+					{ 
+						map[ax][i]=dollcolor;
+						dolltrue=1;	
+					}
+				}
+			}	
+		}
+	}
+	if(map[ax][ay+1]!=dollcolor)
+	{
+		if(ay!=7)
+		{
+			if(map[ax][ay+1]!=0) 
+			{
+				for(j=ay+1;j<8;j++)
+				{
+					if(map[ax][j]==0||map[ax][j]>2)
+					{
+						endy=ay;
+						break;
+					}
+					if(map[ax][j]==dollcolor)
+					{
+						endy=j;
+						break;	
+					}		
+				}
+				for(i=ay+1;i<endy+1;i++)
+				{
+					if(map[ax][i]!=dollcolor)
+					{
+						map[ax][i]=dollcolor;
+						dolltrue=1;	
+					}
+				}
+			}	
+		}
+	}
+if(map[ax-1][ay-1]!=dollcolor) 
+	{
+		if(ax!=0&&ay!=0)  
+		{
+			if(map[ax-1][ay-1]!=0) 
+			{
+				tester[0]=-1; 
+				tester2[0]=-1;  
+				tester3[0]=0;
+				tester4[0]=-2;
+				tester5[0]=-1;
+				PlusOneOrNot[0]=-1;
+			}	
+		}
+	} //test
+	if(map[ax+1][ay-1]!=dollcolor)
+	{
+		if(ax!=7&&ay!=0)
+		{
+			if(map[ax+1][ay-1]!=0)
+			{
+				if(tester[0]!=0)
+					ArrayIndex++;
+				tester[ArrayIndex]=1; 
+				tester2[ArrayIndex]=-1;
+				tester3[ArrayIndex]=0;
+				tester4[ArrayIndex]=2;
+				tester5[ArrayIndex]=-1;
+				PlusOneOrNot[ArrayIndex]=-1;
+			}	
+		}
+	}
+	if(map[ax-1][ay+1]!=dollcolor)
+	{
+		if(ax!=0&&ay!=7)
+		{
+			if(map[ax-1][ay+1]!=0)
+			{
+				if(tester[0]!=0)
+					ArrayIndex++;
+				tester[ArrayIndex]=-1;
+				tester2[ArrayIndex]=1;
+				tester3[ArrayIndex]=7;
+				tester4[ArrayIndex]=-2;
+				tester5[ArrayIndex]=1;
+				PlusOneOrNot[ArrayIndex]=1;
+			}
+		}
+	}
+	if(map[ax+1][ay+1]!=dollcolor)
+	{
+		if(ax!=7&&ay!=7)
+		{
+			if(map[ax+1][ay+1]!=0)
+			{
+				if(tester[0]!=0)
+					ArrayIndex++;
+				tester[ArrayIndex]=1;
+				tester2[ArrayIndex]=1;
+				tester3[ArrayIndex]=7;
+				tester4[ArrayIndex]=2;
+				tester5[ArrayIndex]=1;
+				PlusOneOrNot[ArrayIndex]=1;
+			}	
+		}
+	}
+	if(tester[0]!=0)
+	{
+		for(g=0;g<=ArrayIndex;g++)
+		{
+			if(map[ax+tester[g]][ay+tester2[g]]!=dollcolor)
+			{
+				if(map[ax+tester[g]][ay+tester2[g]]!=0)
+				{
+					gotoxy(18,18);
+					ere = ax+tester[g]; 
+					for(j=ay+tester2[g];j!=tester3[g];j=j+PlusOneOrNot[g])
+					{
+						if(map[ere][j]==0||map[ere][j]>2)
+						{
+							endy=ay;
+							break;
+						}
+						if(map[ere][j]==dollcolor)
+						{
+							endx=ere;
+							endy=j;
+							break;	
+						}		
+						ere=ere+tester[g];
+					}
+					dre = ax+tester[g];
+					for(i=ay+tester2[g];i!=j;i=i+PlusOneOrNot[g])
+					{
+						if(map[ere][j]!=dollcolor)
+							break;
+						if(map[dre][i]!=dollcolor)
+						{ 
+							map[dre][i]=dollcolor;
+							dolltrue=1;
+						}
+						dre=dre+tester[g];
+					}
+				}
+			}	
+			gotoxy(15,21);
+		}	
+	}
+	if(dolltrue==0)
+	{
+		map[ax][ay]=0;
+	} else {
+		if(trueorfalse==0)
+			trueorfalse=1;
+		else
+			trueorfalse=0;
+			giveup=0;
+				gotoxy(15,16);
+				if(trueorfalse==1)
+					printf("검은돌 차례");
+				else
+					printf("흰 돌 차례");
+		DrawArrayDoll(dollcolor);
+	}
+}
+void DrawArrayDoll(int dollcolor)
+{
+	int i,j;
+	int x,y;
+	x=10;
+	y=3;
+	for(i=0;i<8;i++)
+	{
+		for(j=0;j<8;j++)
+		{
+			if(map[j][i]==1)
+			{
+				gotoxy(x,y);
+				printf("○");
+			} else if (map[j][i]==2) {
+				gotoxy(x,y);
+				printf("●");
+			}
+			x+=2;
+		}
+		x=10;
+		y+=1;
+	}
+}
+void gotoxy(int x, int y)
+{
+	COORD Pos;
+	Pos.X = x;
+	Pos.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),Pos);
+}
+int CheckDoll(int ax, int ay)
+{
+	if (map[ax][ay]==1||map[ax][ay]==2)
+		return 1;
+	else
+		return 0;
+}
+int DrawDoll(int ax, int ay, int x, int y)
+{
+	int dollcolor;
+	if (trueorfalse==1)
+	{
+		map[ax][ay]=1;
+		dollcolor=1;	
+	}
+	else if(trueorfalse==0)
+	{ 
+		map[ax][ay]=2;	
+		dollcolor=2;	
+	}
+	Game(ax,ay,dollcolor);
+	return dollcolor;	
+}
+void firstdoll()
+{
+	printf("○");
+	gotoxy(18,7);
+	printf("●");
+	gotoxy(16,6);
+	printf("●");
+	gotoxy(18,6);
+	printf("○");
+	gotoxy(14,7);
+}
+void CheckDollNumber()
+{
+	int u,r;
+	int blacknb=0,whitenb=0; 
+	gotoxy(15,18);
+	printf("게임 종료!\n");
+	blacknb=0;
+	whitenb=0;
+	for(u=0;u<8;u++)
+	{
+		for(r=0;r<8;r++)
+		{
+			if(map[u][r]==1)
+				blacknb++;
+			else if(map[u][r]==2)
+				whitenb++;
+		}
+	}
+	gotoxy(15,19);
+	if(blacknb>whitenb)
+		printf("검은돌 승리!");
+	else if(blacknb<whitenb)
+		printf("흰 돌 승리!");
+	else if(blacknb==whitenb)
+		printf("무승부!");
+}
