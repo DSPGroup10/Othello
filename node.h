@@ -18,14 +18,14 @@ public:
 
 	node(); //생성자 디폴트 생성자만 쓰고 data 0으로 생성 시켜 줄거임
 	void setData(int data);
-	void setUp(node up);
-	void setDown(node down);
-	void setRight(node down);
-	void setLeft(node left);
-	void setUrc(node urc); //urcross setter
-	void setUlc(node ulc); //ulcross setter
-	void setDrc(node drc); //drcross setter
-	void setDlc(node dlc); //dlcross setter
+	void setUp(node *up);
+	void setDown(node *down);
+	void setRight(node *down);
+	void setLeft(node *left);
+	void setUrc(node *urc); //urcross setter
+	void setUlc(node *ulc); //ulcross setter
+	void setDrc(node *drc); //drcross setter
+	void setDlc(node *dlc); //dlcross setter
 
 	int getData();
 	node * getUp();

@@ -14,38 +14,38 @@ node::node() {
 }
 
 void node::setData(int data) {
-	this.data = data;
+	this->data = data;
 }
 
-void node::setUp(node up) {
-	this.up = up;
+void node::setUp(node *up) {
+	this->up = up;
 }
 
-void node::setDown(node down) {
-	this.down = down;
+void node::setDown(node *down) {
+	this->down = down;
 }
 
-void node::setRight(node right) {
-	this.right = right;
+void node::setRight(node *right) {
+	this->right = right;
 }
 
-void node::setLeft(node left) {
-	this.left = left;
+void node::setLeft(node *left) {
+	this->left = left;
 }
 
-void node::setUrc(node urc) {
+void node::setUrc(node *urc) {
 	urcross = urc;
 }
 
-void node::setUlc(node ulc) {
+void node::setUlc(node *ulc) {
 	ulcross = ulc;
 }
 
-void node::setDrc(node drc) {
+void node::setDrc(node *drc) {
 	drcross = drc;
 }
 
-void node::setDlc(node dlc) {
+void node::setDlc(node *dlc) {
 	dlcross = dlc;
 }
 
