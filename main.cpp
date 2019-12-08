@@ -1,30 +1,31 @@
-#include "node.h"
+
 #include <iostream>
 #include <Windows.h>
+#include "node.h"
 
 using namespace std;
 
 node board[8][8];
 
-int color = 2; //¹é ¼ø¼­¿¡´Â 1 Èæ ¼ø¼­¿¡´Â 2 Èæ ½ÃÀÛÀÌ±â¿¡ ÃÊ±â°ªÀº 2
+int color = 2; //ë°± ìˆœì„œì—ëŠ” 1 í‘ ìˆœì„œì—ëŠ” 2 í‘ ì‹œì‘ì´ê¸°ì— ì´ˆê¸°ê°’ì€ 2
 
-void print_Board(node board[][8]); //Ãâ·Â Çü½Ä
+void print_Board(node board[][8]); //ì¶œë ¥ í˜•ì‹
 
-int change_char(char y); //¼¼·Î¸¦ Ç¥ÇöÇÏ´Â ¾ËÆÄºªÀ» ¼ıÀÚ·Î ¸ÊÇÎ
+int change_char(char y); //ì„¸ë¡œë¥¼ í‘œí˜„í•˜ëŠ” ì•ŒíŒŒë²³ì„ ìˆ«ìë¡œ ë§µí•‘
 
-bool input(node board[][8], int x, int y); //º¸µåÆÇ À§Ä¡¸¦ ÀÔ·Â ¹Ş°í ÀÛ¾÷ ½ÇÇà
+bool input(node board[][8], int x, int y); //ë³´ë“œíŒ ìœ„ì¹˜ë¥¼ ì…ë ¥ ë°›ê³  ì‘ì—… ì‹¤í–‰
 
-void change_Color(); //ÀÔ·ÂÀÌ ¼º°øÀûÀ¸·Î Á¾·á µÇ¾úÀ» ¶§ color¸¦ ¹Ù²ãÁÖ´Â ÇÔ¼ö
+void change_Color(); //ì…ë ¥ì´ ì„±ê³µì ìœ¼ë¡œ ì¢…ë£Œ ë˜ì—ˆì„ ë•Œ colorë¥¼ ë°”ê¿”ì£¼ëŠ” í•¨ìˆ˜
 
-void order(); //´©°¡ ³õÀ» Â÷·ÊÀÎÁö ¾Ë·ÁÁÖ´Â ÇÔ¼ö
+void order(); //ëˆ„ê°€ ë†“ì„ ì°¨ë¡€ì¸ì§€ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜
 
-int white(node board[][8]); //Èò»ö µ¹ °³¼ö ¾Ë·ÁÁÖ´Â ÇÔ¼ö
+int white(node board[][8]); //í°ìƒ‰ ëŒ ê°œìˆ˜ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜
 
-int black(node board[][8]); //°ËÀº»ö µ¹ °³¼ö ¾Ë·ÁÁÖ´Â ÇÔ¼ö
+int black(node board[][8]); //ê²€ì€ìƒ‰ ëŒ ê°œìˆ˜ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜
 
 int main(void) {
 
-	for (int i = 0; i < 8; i++) { //º¸µå ³ëµå 8¹æÇâ ¿¬°á ¸®½ºÆ® ±¸Çö
+	for (int i = 0; i < 8; i++) { //ë³´ë“œ ë…¸ë“œ 8ë°©í–¥ ì—°ê²° ë¦¬ìŠ¤íŠ¸ êµ¬í˜„
 		for (int j = 0; j < 8; j++) {
 			board[i][j].setData(0);
 			if (i == 0) {
@@ -33,18 +34,18 @@ int main(void) {
 					board[i][j].setDlc(NULL);
 					board[i][j].setRight(&board[i][j + 1]);
 					board[i][j].setDrc(&board[i + 1][j + 1]);
-					
+
 				}
 				else if (j == 7) {
 					board[i][j].setRight(NULL);
 					board[i][j].setDrc(NULL);
-					board[i][j].setLeft(&board[i - 1][j]);
+					board[i][j].setLeft(&board[i][j - 1]);
 					board[i][j].setDlc(&board[i + 1][j - 1]);
 				}
 				else {
-					board[i][j].setRight(&board[i][j+1]);
-					board[i][j].setDrc(&board[i+1][j+1]);
-					board[i][j].setLeft(&board[i - 1][j]);
+					board[i][j].setRight(&board[i][j + 1]);
+					board[i][j].setDrc(&board[i + 1][j + 1]);
+					board[i][j].setLeft(&board[i][j - 1]);
 					board[i][j].setDlc(&board[i + 1][j - 1]);
 
 				}
@@ -71,7 +72,7 @@ int main(void) {
 					board[i][j].setUrc(&board[i - 1][j + 1]);
 					board[i][j].setLeft(&board[i][j - 1]);
 					board[i][j].setUlc(&board[i - 1][j - 1]);
-				}					
+				}
 				board[i][j].setUp(&board[i - 1][j]);
 				board[i][j].setDown(NULL);
 				board[i][j].setDlc(NULL);
@@ -88,7 +89,7 @@ int main(void) {
 				}
 				else if (j == 7) {
 					board[i][j].setRight(NULL);
-					board[i][j].setDrc(NULL);
+					board[i][j].setUrc(NULL);
 					board[i][j].setDrc(NULL);
 					board[i][j].setLeft(&board[i][j - 1]);
 					board[i][j].setUlc(&board[i - 1][j - 1]);
@@ -103,7 +104,7 @@ int main(void) {
 					board[i][j].setDlc(&board[i + 1][j - 1]);
 				}
 				board[i][j].setUp(&board[i - 1][j]);
-				board[i][j].setDown(&board[i+1][j]);
+				board[i][j].setDown(&board[i + 1][j]);
 			}
 		}
 	}
@@ -120,16 +121,16 @@ int main(void) {
 
 		cout << "(";
 		order();
-		cout << ")Â÷·ÊÀÔ´Ï´Ù. ³õÀ» ÀÚ¸®¸¦ ¼±ÅÃÇÏ¿© ÁÖ¼¼¿ä(°¡·Î ¼¼·Î ¼øÀ¸·Î ÀÔ·ÂÇØÁÖ¼¼¿ä)...... ";
+		cout << ")ì°¨ë¡€ì…ë‹ˆë‹¤. ë†“ì„ ìë¦¬ë¥¼ ì„ íƒí•˜ì—¬ ì£¼ì„¸ìš”(ê°€ë¡œ ì„¸ë¡œ ìˆœìœ¼ë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”)...... ";
 
 		cin >> x >> y;
 
 		if (input(board, x - 1, change_char(y)) == true) {
-			//system("cls"); //cmd ÃÊ±âÈ­
+			//system("cls"); //cmd ì´ˆê¸°í™”
 		}
 		else {
 			while (1) {
-				cout << "µ¹À» ³õÀ» ¼ö ¾ø´Â ÀÚ¸®ÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇÏ¿© ÁÖ¼¼¿ä.....";
+				cout << "ëŒì„ ë†“ì„ ìˆ˜ ì—†ëŠ” ìë¦¬ì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•˜ì—¬ ì£¼ì„¸ìš”.....";
 				cin >> x >> y;
 				if (input(board, x - 1, change_char(y)) == true) {
 					//system("cls");
@@ -141,23 +142,25 @@ int main(void) {
 	return 0;
 }
 
-void print_Board(node board[][8]) { 
-	cout << " _____  _____  _   _  _____  _      _      _____ "<< endl;
-	cout << "|  _  ||_   _|| | | ||  ___|| |    | |    |  _  | "  << endl;
-	cout << "| | | |  | |  | |_| || |___|| |    | |    | | | |" << endl;
+void print_Board(node board[][8]) {
+	cout << " _____  _____  _   _  _____  _      _      _____ " << endl;
+	cout << "|  _  ||_   _|| | | ||  ___|| |    | |    |  _  | " << endl;
+	cout << "| | | |  | |  | |_| || |___ | |    | |    | | | |" << endl;
 	cout << "| | | |  | |  |  _  ||  ___|| |    | |    | | | | " << endl;
-	cout << "| |_| |  | |  | | | || |___|| |___ | |___ | |_| |   " << endl;
+	cout << "| |_| |  | |  | | | || |___ | |___ | |___ | |_| |   " << endl;
 	cout << "|_____|  |_|  |_| |_||_____||_____||_____||_____|   " << endl << endl;
+	cout << "By. KWU DSPGroup10" << endl;
 	cout << "   +----+----+----+----+----+----+----+----+ " << endl;
-	
+
+
 	for (int i = 0; i < 8; i++) {
 		cout << " " << i + 1 << " |";
 		for (int j = 0; j < 8; j++) {
-			if(board[i][j].getData()==1 ){
-				cout << " ¡Ü |";
+			if (board[i][j].getData() == 1) {
+				cout << " â— |";
 			}
 			else if (board[i][j].getData() == 2) {
-				cout << " ¡Û |";
+				cout << " â—‹ |";
 			}
 			else {
 				cout << "    |";
@@ -168,7 +171,7 @@ void print_Board(node board[][8]) {
 	cout << "     A    B    C    D    E    F    G    H    " << endl;
 }
 
-int change_char(char y) { 
+int change_char(char y) {
 	if (y == 'A' || y == 'a') {
 		return 0;
 	}
@@ -200,19 +203,19 @@ bool input(node board[][8], int x, int y) {
 	if (board[x][y].getData() != 0) {
 		return false;
 	}
-	
+
 	int check = 0;
 
-	node *up=board[x][y].getUp();
-	node *ulc=board[x][y].getUlc();
-	node *urc=board[x][y].getUrc();
-	node *left=board[x][y].getLeft();
-	node *right=board[x][y].getRight();
-	node *down=board[x][y].getDown();
-	node *dlc=board[x][y].getDlc();
-	node *drc = board[x][y].getDrc();
+	node* up = board[x][y].getUp();
+	node* ulc = board[x][y].getUlc();
+	node* urc = board[x][y].getUrc();
+	node* left = board[x][y].getLeft();
+	node* right = board[x][y].getRight();
+	node* down = board[x][y].getDown();
+	node* dlc = board[x][y].getDlc();
+	node* drc = board[x][y].getDrc();
 
-	if (up != NULL && up->getData() - color != 0 && up->getData() !=0) {
+	if (up != NULL && up->getData() - color != 0 && up->getData() != 0) {
 		while (1) {
 			up = up->getUp();
 			if (up == NULL) {
@@ -222,13 +225,23 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (up->getData() == color) {
-				while(1) {
+				while (1) {
 					up = up->getDown();
-					if (up->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (up->getData() == 0) {
+							break;
+						}
+						else {
+							up->setData(color);
+						}
 					}
 					else {
-						up->setData(color);
+						if (up->getData() == color) {
+							break;
+						}
+						else {
+							up->setData(color);
+						}
 					}
 				}
 				board[x][y].setData(color);
@@ -247,15 +260,25 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (ulc->getData() == color) {
-				while(1) {
+				while (1) {
 					ulc = ulc->getDrc();
-					if (ulc->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (ulc->getData() == 0) {
+							break;
+						}
+						else {
+							ulc->setData(color);
+						}
 					}
 					else {
-						ulc->setData(color);
+						if (ulc->getData() == color) {
+							break;
+						}
+						else {
+							ulc->setData(color);
+						}
 					}
-				} 
+				}
 				board[x][y].setData(color);
 				check++;
 				break;
@@ -272,13 +295,23 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (urc->getData() == color) {
-				while(1) {
+				while (1) {
 					urc = urc->getDlc();
-					if (urc->getData() == 0) {
-						break;	
+					if (check == 0) {
+						if (urc->getData() == 0) {
+							break;
+						}
+						else {
+							urc->setData(color);
+						}
 					}
 					else {
-						urc->setData(color);
+						if (urc->getData() == color) {
+							break;
+						}
+						else {
+							urc->setData(color);
+						}
 					}
 				}
 				board[x][y].setData(color);
@@ -297,13 +330,23 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (left->getData() == color) {
-				while(1) {
+				while (1) {
 					left = left->getRight();
-					if (left->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (left->getData() == 0) {
+							break;
+						}
+						else {
+							left->setData(color);
+						}
 					}
 					else {
-						left->setData(color);
+						if (left->getData() == color) {
+							break;
+						}
+						else {
+							left->setData(color);
+						}
 					}
 				}
 				board[x][y].setData(color);
@@ -322,15 +365,25 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (right->getData() == color) {
-				while(1) {
+				while (1) {
 					right = right->getLeft();
-					if (right->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (right->getData() == 0) {
+							break;
+						}
+						else {
+							right->setData(color);
+						}
 					}
 					else {
-						right->setData(color);
+						if (right->getData() == color) {
+							break;
+						}
+						else {
+							right->setData(color);
+						}
 					}
-				} 
+				}
 				board[x][y].setData(color);
 				check++;
 				break;
@@ -347,15 +400,25 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (down->getData() == color) {
-				while(1) {
+				while (1) {
 					down = down->getUp();
-					if (down->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (down->getData() == 0) {
+							break;
+						}
+						else {
+							down->setData(color);
+						}
 					}
 					else {
-						down->setData(color);
+						if (down->getData() == color) {
+							break;
+						}
+						else {
+							down->setData(color);
+						}
 					}
-				} 
+				}
 				board[x][y].setData(color);
 				check++;
 				break;
@@ -372,15 +435,25 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (dlc->getData() == color) {
-				while(1) {
+				while (1) {
 					dlc = dlc->getUrc();
-					if (dlc->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (dlc->getData() == 0) {
+							break;
+						}
+						else {
+							dlc->setData(color);
+						}
 					}
 					else {
-						dlc->setData(color);
+						if (dlc->getData() == color) {
+							break;
+						}
+						else {
+							dlc->setData(color);
+						}
 					}
-				} 
+				}
 				board[x][y].setData(color);
 				check++;
 				break;
@@ -397,15 +470,25 @@ bool input(node board[][8], int x, int y) {
 				break;
 			}
 			else if (drc->getData() == color) {
-				while(1) {
+				while (1) {
 					drc = drc->getUlc();
-					if (drc->getData() == 0) {
-						break;
+					if (check == 0) {
+						if (drc->getData() == 0) {
+							break;
+						}
+						else {
+							drc->setData(color);
+						}
 					}
 					else {
-						drc->setData(color);
+						if (drc->getData() == color) {
+							break;
+						}
+						else {
+							drc->setData(color);
+						}
 					}
-				} 
+				}
 				board[x][y].setData(color);
 				check++;
 				break;
@@ -433,10 +516,10 @@ void change_Color() {
 
 void order() {
 	if (color == 1) {
-		cout << "¹é";
+		cout << "ë°±";
 	}
 	else {
-		cout << "Èæ";
+		cout << "í‘";
 	}
 }
 
