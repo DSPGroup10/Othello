@@ -12,9 +12,11 @@ void print_Board(node board[][8]); //출력 형식
 
 int change_char(char y); //세로를 표현하는 알파벳을 숫자로 맵핑
 
-void input(node board[][8], int x, int y); //보드판 위치를 입력 받고 작업 실행
+bool input(node board[][8], int x, int y); //보드판 위치를 입력 받고 작업 실행
 
 void change_Color(); //입력이 성공적으로 종료 되었을 때 color를 바꿔주는 함수
+
+void order(); //누가 놓을 차례인지 알려주는 함수
 
 int main(void) {
 
@@ -112,13 +114,25 @@ int main(void) {
 	while (1) {
 		print_Board(board);
 
-		cout << "()턴입니다. 놓을 자리를 선택하여 주세요(가로 세로 순으로 입력해주세요)...... ";
+		cout << "(";
+		order();
+		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(가로 세로 순으로 입력해주세요)...... ";
 
 		cin >> x >> y;
 
-		input(board, x - 1, change_char(y));
-
-		system("cls"); //cmd 초기화
+		if (input(board, x - 1, change_char(y)) == true) {
+			//system("cls"); //cmd 초기화
+		}
+		else {
+			while (1) {
+				cout << "돌을 놓을 수 없는 자리입니다. 다시 선택하여 주세요.....";
+				cin >> x >> y;
+				if (input(board, x - 1, change_char(y)) == true) {
+					//system("cls");
+					break;
+				}
+			}
+		}
 	}
 	return 0;
 }
@@ -171,7 +185,13 @@ int change_char(char y) {
 	}
 }
 
-void input(node board[][8], int x, int y) {
+bool input(node board[][8], int x, int y) {
+
+	if (board[x][y].getData() != 0) {
+		return false;
+	}
+	
+	int check = 0;
 
 	node *up=board[x][y].getUp();
 	node *ulc=board[x][y].getUlc();
@@ -180,24 +200,215 @@ void input(node board[][8], int x, int y) {
 	node *right=board[x][y].getRight();
 	node *down=board[x][y].getDown();
 	node *dlc=board[x][y].getDlc();
-	node *drc=board[x][y].getDrc();
+	node *drc = board[x][y].getDrc();
 
-	if (up->getData() - color != 0&&up->getData() !=0) {
+	if (up != NULL && up->getData() - color != 0 && up->getData() !=0) {
 		while (1) {
 			up = up->getUp();
-			if (up->getData() == color) {
-				do {
+			if (up == NULL) {
+				break;
+			}
+			else if (up->getData() == 0) {
+				break;
+			}
+			else if (up->getData() == color) {
+				while(1) {
 					up = up->getDown();
-					up->setData(color);
-					if (up->getData() != color) {
-
+					if (up->getData() == 0) {
+						break;
 					}
-				} while (up->getData() != color);
+					else {
+						up->setData(color);
+					}
+				}
 				board[x][y].setData(color);
-				change_Color();
+				check++;
 				break;
 			}
 		}
+	}
+	if (ulc != NULL && ulc->getData() - color != 0 && ulc->getData() != 0) {
+		while (1) {
+			ulc = ulc->getUlc();
+			if (ulc == NULL) {
+				break;
+			}
+			else if (ulc->getData() == 0) {
+				break;
+			}
+			else if (ulc->getData() == color) {
+				while(1) {
+					ulc = ulc->getDrc();
+					if (ulc->getData() == 0) {
+						break;
+					}
+					else {
+						ulc->setData(color);
+					}
+				} 
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+	if (urc != NULL && urc->getData() - color != 0 && urc->getData() != 0) {
+		while (1) {
+			urc = urc->getUrc();
+			if (urc == NULL) {
+				break;
+			}
+			else if (urc->getData() == 0) {
+				break;
+			}
+			else if (urc->getData() == color) {
+				while(1) {
+					urc = urc->getDlc();
+					if (urc->getData() == 0) {
+						break;	
+					}
+					else {
+						urc->setData(color);
+					}
+				}
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+	if (left != NULL && left->getData() - color != 0 && left->getData() != 0) {
+		while (1) {
+			left = left->getLeft();
+			if (left == NULL) {
+				break;
+			}
+			else if (left->getData() == 0) {
+				break;
+			}
+			else if (left->getData() == color) {
+				while(1) {
+					left = left->getRight();
+					if (left->getData() == 0) {
+						break;
+					}
+					else {
+						left->setData(color);
+					}
+				}
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+	if (right != NULL && right->getData() - color != 0 && right->getData() != 0) {
+		while (1) {
+			right = right->getRight();
+			if (right == NULL) {
+				break;
+			}
+			else if (right->getData() == 0) {
+				break;
+			}
+			else if (right->getData() == color) {
+				while(1) {
+					right = right->getLeft();
+					if (right->getData() == 0) {
+						break;
+					}
+					else {
+						right->setData(color);
+					}
+				} 
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+	if (down != NULL && down->getData() - color != 0 && down->getData() != 0) {
+		while (1) {
+			down = down->getDown();
+			if (down == NULL) {
+				break;
+			}
+			else if (down->getData() == 0) {
+				break;
+			}
+			else if (down->getData() == color) {
+				while(1) {
+					down = down->getUp();
+					if (down->getData() == 0) {
+						break;
+					}
+					else {
+						down->setData(color);
+					}
+				} 
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+	if (dlc != NULL && dlc->getData() - color != 0 && dlc->getData() != 0) {
+		while (1) {
+			dlc = dlc->getDlc();
+			if (dlc == NULL) {
+				break;
+			}
+			else if (dlc->getData() == 0) {
+				break;
+			}
+			else if (dlc->getData() == color) {
+				while(1) {
+					dlc = dlc->getUrc();
+					if (dlc->getData() == 0) {
+						break;
+					}
+					else {
+						dlc->setData(color);
+					}
+				} 
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+	if (drc != NULL && drc->getData() - color != 0 && drc->getData() != 0) {
+		while (1) {
+			drc = drc->getDrc();
+			if (drc == NULL) {
+				break;
+			}
+			else if (drc->getData() == 0) {
+				break;
+			}
+			else if (drc->getData() == color) {
+				while(1) {
+					drc = drc->getUlc();
+					if (drc->getData() == 0) {
+						break;
+					}
+					else {
+						drc->setData(color);
+					}
+				} 
+				board[x][y].setData(color);
+				check++;
+				break;
+			}
+		}
+	}
+
+	if (check > 0) {
+		change_Color();
+		return true;
+	}
+	else {
+		return false;
 	}
 }
 
@@ -207,5 +418,14 @@ void change_Color() {
 	}
 	else {
 		color = 1;
+	}
+}
+
+void order() {
+	if (color == 1) {
+		cout << "백";
+	}
+	else {
+		cout << "흑";
 	}
 }
