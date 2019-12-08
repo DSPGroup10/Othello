@@ -18,6 +18,10 @@ void change_Color(); //입력이 성공적으로 종료 되었을 때 color를 바꿔주는 함수
 
 void order(); //누가 놓을 차례인지 알려주는 함수
 
+int white(node board[][8]); //흰색 돌 개수 알려주는 함수
+
+int black(node board[][8]); //검은색 돌 개수 알려주는 함수
+
 int main(void) {
 
 	for (int i = 0; i < 8; i++) { //보드 노드 8방향 연결 리스트 구현
@@ -138,6 +142,12 @@ int main(void) {
 }
 
 void print_Board(node board[][8]) { 
+	cout << " _____  _____  _   _  _____  _      _      _____ "<< endl;
+	cout << "|  _  ||_   _|| | | ||  ___|| |    | |    |  _  | "  << endl;
+	cout << "| | | |  | |  | |_| || |___|| |    | |    | | | |" << endl;
+	cout << "| | | |  | |  |  _  ||  ___|| |    | |    | | | | " << endl;
+	cout << "| |_| |  | |  | | | || |___|| |___ | |___ | |_| |   " << endl;
+	cout << "|_____|  |_|  |_| |_||_____||_____||_____||_____|   " << endl << endl;
 	cout << "   +----+----+----+----+----+----+----+----+ " << endl;
 	
 	for (int i = 0; i < 8; i++) {
@@ -428,4 +438,28 @@ void order() {
 	else {
 		cout << "흑";
 	}
+}
+
+int white(node board[][8]) {
+	int count = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			if (board[i][j].getData() == 1) {
+				count++;
+			}
+		}
+	}
+	return count;
+}
+
+int black(node board[][8]) {
+	int count = 0;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; i < 8; j++) {
+			if (board[i][j].getData() == 2) {
+				count++;
+			}
+		}
+	}
+	return count;
 }
