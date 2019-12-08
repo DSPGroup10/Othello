@@ -118,7 +118,6 @@ int main(void) {
 	char y;
 	while (1) {
 		print_Board(board);
-
 		cout << "(";
 		order();
 		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(가로 세로 순으로 입력해주세요)...... ";
@@ -143,6 +142,9 @@ int main(void) {
 }
 
 void print_Board(node board[][8]) {
+	int bcount = 0;
+	int wcount = 0;
+
 	cout << " _____  _____  _   _  _____  _      _      _____ " << endl;
 	cout << "|  _  ||_   _|| | | ||  ___|| |    | |    |  _  | " << endl;
 	cout << "| | | |  | |  | |_| || |___ | |    | |    | | | |" << endl;
@@ -157,10 +159,10 @@ void print_Board(node board[][8]) {
 		cout << " " << i + 1 << " |";
 		for (int j = 0; j < 8; j++) {
 			if (board[i][j].getData() == 1) {
-				cout << " ● |";
+				cout << " ● |"; wcount++;
 			}
 			else if (board[i][j].getData() == 2) {
-				cout << " ○ |";
+				cout << " ○ |"; bcount++;
 			}
 			else {
 				cout << "    |";
@@ -169,6 +171,7 @@ void print_Board(node board[][8]) {
 		cout << endl << "   +----+----+----+----+----+----+----+----+ " << endl;
 	}
 	cout << "     A    B    C    D    E    F    G    H    " << endl;
+	cout << "현재 돌 개수 >> ○: " << bcount << " | ●:" << wcount << endl;
 }
 
 int change_char(char y) {
@@ -524,25 +527,25 @@ void order() {
 }
 
 int white(node board[][8]) {
-	int count = 0;
+	int wcount = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (board[i][j].getData() == 1) {
-				count++;
+				wcount++;
 			}
 		}
 	}
-	return count;
+	return wcount;
 }
 
 int black(node board[][8]) {
-	int count = 0;
+	int bcount = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; i < 8; j++) {
 			if (board[i][j].getData() == 2) {
-				count++;
+				bcount++;
 			}
 		}
 	}
-	return count;
+	return bcount;
 }
