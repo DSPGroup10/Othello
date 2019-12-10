@@ -30,6 +30,7 @@ int black(node board[][8]); //검은색 돌 개수 알려주는 함수
 
 int main(void) {
 
+	start:
 	for (int i = 0; i < 8; i++) { //보드 노드 8방향 연결 리스트 구현
 		for (int j = 0; j < 8; j++) {
 			board[i][j].setData(0);
@@ -97,7 +98,6 @@ int main(void) {
 					board[i][j].setUrc(NULL);
 					board[i][j].setDrc(NULL);
 					board[i][j].setLeft(&board[i][j - 1]);
-					board[i][j].setUlc(&board[i - 1][j - 1]);
 					board[i][j].setDlc(&board[i + 1][j - 1]);
 				}
 				else {
@@ -132,6 +132,7 @@ int main(void) {
 		if (exit == 2) {
 			int bcount = 0;
 			int wcount = 0;
+			cout << "양쪽 모두 돌을 놓을 수 없습니다. 승부를 판정합니다." << endl;
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					if (board[i][j].getData() == 1) {
@@ -196,6 +197,13 @@ int main(void) {
 	}
 	cout << "게임을 종료합니다." << endl;
 	Sleep(60000);
+	char run;
+	cout << "프로그램을 종료하시겠습니까??(y/n) (n 입력시 새로운 게임 진행)" << endl;
+	cout << "입력:";
+	cin >> run;
+	if (run == 'n' || run == 'N') {
+		goto start;
+	}
 	return 0;
 } // int main
 
@@ -213,6 +221,10 @@ bool checkpass(node board[][8]) {
 	if (checknum == 64) {
 		if (color == 2) {
 			cout << "흑이 놓을 수 있는 자리가 없습니다. 차례를 넘깁니다." << endl; Sleep(2000);
+			change_Color();
+			system("cls");
+			print_Board(board);
+			return 1;
 		}
 		else if(color==1)
 			cout << "백이 놓을 수 있는 자리가 없습니다. 차례를 넘깁니다." << endl; Sleep(2000);
