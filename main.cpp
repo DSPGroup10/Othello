@@ -1,6 +1,8 @@
+
 #include <iostream>
 #include <Windows.h>
 #include "node.h"
+
 
 using namespace std;
 
@@ -12,11 +14,11 @@ void print_Board(node board[][8]); //출력 형식
 
 int change_char(char y); //세로를 표현하는 알파벳을 숫자로 맵핑
 
-bool checkpass(); //PASS 체크
-
-void pass(); //pass한다
+bool checkpass(node board[][8]); //PASS 체크
 
 bool input(node board[][8], int x, int y); //보드판 위치를 입력 받고 작업 실행
+
+bool checkinput(node board[][8], int x, int y); 
 
 void change_Color(); //입력이 성공적으로 종료 되었을 때 color를 바꿔주는 함수
 
@@ -120,12 +122,53 @@ int main(void) {
 	int x;
 	char y;
 	while (1) {
+		int exit = 0;
 		print_Board(board);
-		checkpass(); 
-		pass();
+		if (checkpass(board) == true)
+			exit++; 
+		if (checkpass(board) == true)
+			exit++; 
+		
+		if (exit == 2) {
+			int bcount = 0;
+			int wcount = 0;
+			for (int i = 0; i < 8; i++) {
+				for (int j = 0; j < 8; j++) {
+					if (board[i][j].getData() == 1) {
+						 wcount++;
+					}
+					else if (board[i][j].getData() == 2) {
+						 bcount++;
+					}
+				}
+			}
+			if (bcount == 0) {
+				cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
+				break;
+			}
+			else if (wcount == 0) {
+				cout << "흑이 이겼습니다. 게임을 종료합니다." << endl;
+				break;
+			}
+			else if (wcount + bcount == 64) {
+				cout << "더 이상 둘 곳이 없습니다. 돌의 개수가 더 많은 쪽이 승리합니다." << endl << endl;
+				if (wcount > bcount) {
+					cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
+					break;
+				}
+				else if (bcount > wcount) {
+					cout << "흑이 이겼습니다. 게임을 종료합니다." << endl;
+					break;
+				}
+				else
+					cout << "돌의 개수가 같습니다. 무승부입니다." << endl; break;
+			}
+		}
+		
+		
 		cout << "(";
 		order();
-		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(가로 세로 순으로 입력해주세요)...... ";
+		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(숫자 영어 순으로 입력해주세요)...... ";
 
 		cin >> x >> y;
 
@@ -147,24 +190,29 @@ int main(void) {
 } // int main
 
 // pass check
-bool checkpass() {
+bool checkpass(node board[][8]) {
+	int checknum=0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
-				if (input(board, i, j) == true) {
-					board[i][j].setData(0);
-					return true;
-				}
+			if (checkinput(board, i, j) == false) {
+				checknum++;
+			}
 		}
 	}
-	return false;
+	if (checknum == 64) {
+		if (color == 2) {
+			cout << "흑이 놓을 수 있는 자리가 없습니다. 차례를 넘깁니다." << endl; Sleep(2000);
+		}
+		else if(color==1)
+			cout << "백이 놓을 수 있는 자리가 없습니다. 차례를 넘깁니다." << endl; Sleep(2000);
+		change_Color();
+		system("cls");
+		print_Board(board);
+		return 1;
+	}
+	return 0;
 }
 
-void pass() {
-	if (checkpass() == false) {
-		cout << " 돌을 놓을 수 없어 PASS합니다.";
-		change_Color();
-	}
-}
 
 void print_Board(node board[][8]) {
 	int bcount = 0;
@@ -176,7 +224,8 @@ void print_Board(node board[][8]) {
 	cout << "| | | |  | |  |  _  ||  ___|| |    | |    | | | | " << endl;
 	cout << "| |_| |  | |  | | | || |___ | |___ | |___ | |_| |   " << endl;
 	cout << "|_____|  |_|  |_| |_||_____||_____||_____||_____|   " << endl << endl;
-	cout << "By. KWU DSPGroup10" << endl;
+	cout << "Released 2019 12 11" << endl;
+	cout << "Directed By. KWU DSPGroup10 (Seo jongwon, Kim hyunil, Byeon hyosang, Park jaehyun)" << endl;
 	cout << "   +----+----+----+----+----+----+----+----+ " << endl;
 
 
@@ -554,6 +603,199 @@ bool input(node board[][8], int x, int y) {
 	}
 }
 
+bool checkinput(node board[][8], int x, int y) {
+
+	if (board[x][y].getData() != 0) {
+		return false;
+	}
+
+	int check = 0;
+
+	node* up = board[x][y].getUp();
+	node* ulc = board[x][y].getUlc();
+	node* urc = board[x][y].getUrc();
+	node* left = board[x][y].getLeft();
+	node* right = board[x][y].getRight();
+	node* down = board[x][y].getDown();
+	node* dlc = board[x][y].getDlc();
+	node* drc = board[x][y].getDrc();
+
+	if (up != NULL && up->getData() - color != 0 && up->getData() != 0) {
+		while (1) {
+			up = up->getUp();
+			if (up == NULL) {
+				break;
+			}
+			else if (up->getData() == 0) {
+				break;
+			}
+			else if (up->getData() == color) {
+				while (1) {
+					up = up->getDown();
+					if (up->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (ulc != NULL && ulc->getData() - color != 0 && ulc->getData() != 0) {
+		while (1) {
+			ulc = ulc->getUlc();
+			if (ulc == NULL) {
+				break;
+			}
+			else if (ulc->getData() == 0) {
+				break;
+			}
+			else if (ulc->getData() == color) {
+				while (1) {
+					ulc = ulc->getDrc();
+					if (ulc->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (urc != NULL && urc->getData() - color != 0 && urc->getData() != 0) {
+		while (1) {
+			urc = urc->getUrc();
+			if (urc == NULL) {
+				break;
+			}
+			else if (urc->getData() == 0) {
+				break;
+			}
+			else if (urc->getData() == color) {
+				while (1) {
+					urc = urc->getDlc();
+					if (urc->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (left != NULL && left->getData() - color != 0 && left->getData() != 0) {
+		while (1) {
+			left = left->getLeft();
+			if (left == NULL) {
+				break;
+			}
+			else if (left->getData() == 0) {
+				break;
+			}
+			else if (left->getData() == color) {
+				while (1) {
+					left = left->getRight();
+					if (left->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (right != NULL && right->getData() - color != 0 && right->getData() != 0) {
+		while (1) {
+			right = right->getRight();
+			if (right == NULL) {
+				break;
+			}
+			else if (right->getData() == 0) {
+				break;
+			}
+			else if (right->getData() == color) {
+				while (1) {
+					right = right->getLeft();
+					if (right->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (down != NULL && down->getData() - color != 0 && down->getData() != 0) {
+		while (1) {
+			down = down->getDown();
+			if (down == NULL) {
+				break;
+			}
+			else if (down->getData() == 0) {
+				break;
+			}
+			else if (down->getData() == color) {
+				while (1) {
+					down = down->getUp();
+					if (down->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (dlc != NULL && dlc->getData() - color != 0 && dlc->getData() != 0) {
+		while (1) {
+			dlc = dlc->getDlc();
+			if (dlc == NULL) {
+				break;
+			}
+			else if (dlc->getData() == 0) {
+				break;
+			}
+			else if (dlc->getData() == color) {
+				while (1) {
+					dlc = dlc->getUrc();
+					if (dlc->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+	if (drc != NULL && drc->getData() - color != 0 && drc->getData() != 0) {
+		while (1) {
+			drc = drc->getDrc();
+			if (drc == NULL) {
+				break;
+			}
+			else if (drc->getData() == 0) {
+				break;
+			}
+			else if (drc->getData() == color) {
+				while (1) {
+					drc = drc->getUlc();
+					if (drc->getData() == 0) {
+						break;
+					}
+				}
+				check++;
+				break;
+			}
+		}
+	}
+
+	if (check > 0) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
 void change_Color() { //턴 바꿈
 	if (color == 1) {
 		color = 2;
