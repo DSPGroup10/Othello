@@ -194,6 +194,8 @@ int main(void) {
 			}
 		}
 	}
+	cout << "게임을 종료합니다." << endl;
+	Sleep(60000);
 	return 0;
 } // int main
 
@@ -846,4 +848,3 @@ int black(node board[][8]) { //블랙 갯수 세기
 	}
 	return bcount;
 }
-
