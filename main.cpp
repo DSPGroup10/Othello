@@ -846,3 +846,4 @@ int black(node board[][8]) { //블랙 갯수 세기
 	}
 	return bcount;
 }
+
