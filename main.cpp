@@ -1,4 +1,4 @@
-
+//#include<stdio.h>
 #include <iostream>
 #include <Windows.h>
 #include "node.h"
@@ -8,29 +8,29 @@ using namespace std;
 
 node board[8][8];
 
-int color = 2; //¹é ¼ø¼­¿¡´Â 1 Èæ ¼ø¼­¿¡´Â 2 Èæ ½ÃÀÛÀÌ±â¿¡ ÃÊ±â°ªÀº 2
+int color = 2; //ë°± ìˆœì„œì—ëŠ” 1 í‘ ìˆœì„œì—ëŠ” 2 í‘ ì‹œì‘ì´ê¸°ì— ì´ˆê¸°ê°’ì€ 2
 
-void print_Board(node board[][8]); //Ãâ·Â Çü½Ä
+void print_Board(node board[][8]); //ì¶œë ¥ í˜•ì‹
 
-int change_char(char y); //¼¼·Î¸¦ Ç¥ÇöÇÏ´Â ¾ËÆÄºªÀ» ¼ıÀÚ·Î ¸ÊÇÎ
+int change_char(char y); //ì„¸ë¡œë¥¼ í‘œí˜„í•˜ëŠ” ì•ŒíŒŒë²³ì„ ìˆ«ìë¡œ ë§µí•‘
 
-bool checkpass(node board[][8]); //PASS Ã¼Å©
+bool checkpass(node board[][8]); //PASS ì²´í¬
 
-bool input(node board[][8], int x, int y); //º¸µåÆÇ À§Ä¡¸¦ ÀÔ·Â ¹Ş°í ÀÛ¾÷ ½ÇÇà
+bool input(node board[][8], int x, int y); //ë³´ë“œíŒ ìœ„ì¹˜ë¥¼ ì…ë ¥ ë°›ê³  ì‘ì—… ì‹¤í–‰
 
 bool checkinput(node board[][8], int x, int y); 
 
-void change_Color(); //ÀÔ·ÂÀÌ ¼º°øÀûÀ¸·Î Á¾·á µÇ¾úÀ» ¶§ color¸¦ ¹Ù²ãÁÖ´Â ÇÔ¼ö
+void change_Color(); //ì…ë ¥ì´ ì„±ê³µì ìœ¼ë¡œ ì¢…ë£Œ ë˜ì—ˆì„ ë•Œ colorë¥¼ ë°”ê¿”ì£¼ëŠ” í•¨ìˆ˜
 
-void order(); //´©°¡ ³õÀ» Â÷·ÊÀÎÁö ¾Ë·ÁÁÖ´Â ÇÔ¼ö
+void order(); //ëˆ„ê°€ ë†“ì„ ì°¨ë¡€ì¸ì§€ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜
 
-int white(node board[][8]); //Èò»ö µ¹ °³¼ö ¾Ë·ÁÁÖ´Â ÇÔ¼ö
+int white(node board[][8]); //í°ìƒ‰ ëŒ ê°œìˆ˜ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜
 
-int black(node board[][8]); //°ËÀº»ö µ¹ °³¼ö ¾Ë·ÁÁÖ´Â ÇÔ¼ö
+int black(node board[][8]); //ê²€ì€ìƒ‰ ëŒ ê°œìˆ˜ ì•Œë ¤ì£¼ëŠ” í•¨ìˆ˜
 
 int main(void) {
 
-	for (int i = 0; i < 8; i++) { //º¸µå ³ëµå 8¹æÇâ ¿¬°á ¸®½ºÆ® ±¸Çö
+	for (int i = 0; i < 8; i++) { //ë³´ë“œ ë…¸ë“œ 8ë°©í–¥ ì—°ê²° ë¦¬ìŠ¤íŠ¸ êµ¬í˜„
 		for (int j = 0; j < 8; j++) {
 			board[i][j].setData(0);
 			if (i == 0) {
@@ -143,41 +143,49 @@ int main(void) {
 				}
 			}
 			if (bcount == 0) {
-				cout << "¹éÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+				cout << "ë°±ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 				break;
 			}
 			else if (wcount == 0) {
-				cout << "ÈæÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+				cout << "í‘ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 				break;
 			}
 			else if (wcount + bcount == 64) {
-				cout << "´õ ÀÌ»ó µÑ °÷ÀÌ ¾ø½À´Ï´Ù. µ¹ÀÇ °³¼ö°¡ ´õ ¸¹Àº ÂÊÀÌ ½Â¸®ÇÕ´Ï´Ù." << endl << endl;
+				cout << "ë” ì´ìƒ ë‘˜ ê³³ì´ ì—†ìŠµë‹ˆë‹¤. ëŒì˜ ê°œìˆ˜ê°€ ë” ë§ì€ ìª½ì´ ìŠ¹ë¦¬í•©ë‹ˆë‹¤." << endl << endl;
 				if (wcount > bcount) {
-					cout << "¹éÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+					cout << "ë°±ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 					break;
 				}
 				else if (bcount > wcount) {
-					cout << "ÈæÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+					cout << "í‘ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 					break;
 				}
 				else
-					cout << "µ¹ÀÇ °³¼ö°¡ °°½À´Ï´Ù. ¹«½ÂºÎÀÔ´Ï´Ù." << endl; break;
+					cout << "ëŒì˜ ê°œìˆ˜ê°€ ê°™ìŠµë‹ˆë‹¤. ë¬´ìŠ¹ë¶€ì…ë‹ˆë‹¤." << endl; break;
 			}
 		}
-		
-		
 		cout << "(";
 		order();
-		cout << ")Â÷·ÊÀÔ´Ï´Ù. ³õÀ» ÀÚ¸®¸¦ ¼±ÅÃÇÏ¿© ÁÖ¼¼¿ä(¼ıÀÚ ¿µ¾î ¼øÀ¸·Î ÀÔ·ÂÇØÁÖ¼¼¿ä)...... ";
-
+		cout << ")ì°¨ë¡€ì…ë‹ˆë‹¤. ë†“ì„ ìë¦¬ë¥¼ ì„ íƒí•˜ì—¬ ì£¼ì„¸ìš”(ìˆ«ì ì˜ì–´ ìˆœìœ¼ë¡œ ì…ë ¥í•´ì£¼ì„¸ìš”)...... "<<endl;
+		cout << "í˜„ì¬ ë†“ì„ ìˆ˜ ìˆëŠ” ìë¦¬:";
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (checkinput(board, i, j) == true) {
+					char ch = j + 65;
+					cout << i+1<<ch<<" ";
+				}
+			}
+		}
+		cout << endl;
+		cout << "ì…ë ¥í•  ìœ„ì¹˜:";
 		cin >> x >> y;
 
 		if (input(board, x - 1, change_char(y)) == true) {
-			system("cls"); //cmd ÃÊ±âÈ­
+			system("cls"); //cmd ì´ˆê¸°í™”
 		}
 		else {
 			while (1) {
-				cout << "µ¹À» ³õÀ» ¼ö ¾ø´Â ÀÚ¸®ÀÔ´Ï´Ù. ´Ù½Ã ¼±ÅÃÇÏ¿© ÁÖ¼¼¿ä.....";
+				cout << "ëŒì„ ë†“ì„ ìˆ˜ ì—†ëŠ” ìë¦¬ì…ë‹ˆë‹¤. ë‹¤ì‹œ ì„ íƒí•˜ì—¬ ì£¼ì„¸ìš”.....";
 				cin >> x >> y;
 				if (input(board, x - 1, change_char(y)) == true) {
 					system("cls");
@@ -199,12 +207,13 @@ bool checkpass(node board[][8]) {
 			}
 		}
 	}
+	cout << endl;
 	if (checknum == 64) {
 		if (color == 2) {
-			cout << "ÈæÀÌ ³õÀ» ¼ö ÀÖ´Â ÀÚ¸®°¡ ¾ø½À´Ï´Ù. Â÷·Ê¸¦ ³Ñ±é´Ï´Ù." << endl; Sleep(2000);
+			cout << "í‘ì´ ë†“ì„ ìˆ˜ ìˆëŠ” ìë¦¬ê°€ ì—†ìŠµë‹ˆë‹¤. ì°¨ë¡€ë¥¼ ë„˜ê¹ë‹ˆë‹¤." << endl; Sleep(2000);
 		}
 		else if(color==1)
-			cout << "¹éÀÌ ³õÀ» ¼ö ÀÖ´Â ÀÚ¸®°¡ ¾ø½À´Ï´Ù. Â÷·Ê¸¦ ³Ñ±é´Ï´Ù." << endl; Sleep(2000);
+			cout << "ë°±ì´ ë†“ì„ ìˆ˜ ìˆëŠ” ìë¦¬ê°€ ì—†ìŠµë‹ˆë‹¤. ì°¨ë¡€ë¥¼ ë„˜ê¹ë‹ˆë‹¤." << endl; Sleep(2000);
 		change_Color();
 		system("cls");
 		print_Board(board);
@@ -225,7 +234,7 @@ void print_Board(node board[][8]) {
 	cout << "| |_| |  | |  | | | || |___ | |___ | |___ | |_| |   " << endl;
 	cout << "|_____|  |_|  |_| |_||_____||_____||_____||_____|   " << endl << endl;
 	cout << "Released 2019 12 11" << endl;
-	cout << "Directed By. KWU DSPGroup10 (Seo jongwon, Kim hyunil, Byeon hyosang, Park jaehyun)" << endl;
+	cout << "Directed By. KWU DSPGroup10 (Byeon hyosang, Kim hyunil, Park jaehyun, Seo jongwon)" << endl;
 	cout << "   +----+----+----+----+----+----+----+----+ " << endl;
 
 
@@ -233,10 +242,10 @@ void print_Board(node board[][8]) {
 		cout << " " << i + 1 << " |";
 		for (int j = 0; j < 8; j++) {
 			if (board[i][j].getData() == 1) {
-				cout << " ¡Ü |"; wcount++;
+				cout << " â— |"; wcount++;
 			}
 			else if (board[i][j].getData() == 2) {
-				cout << " ¡Û |"; bcount++;
+				cout << " â—‹ |"; bcount++;
 			}
 			else {
 				cout << "    |";
@@ -244,32 +253,32 @@ void print_Board(node board[][8]) {
 		}
 		cout << endl << "   +----+----+----+----+----+----+----+----+ " << endl;
 	}
-	cout << "     A    B    C    D    E    F    G    H    " << endl;
-	cout << "ÇöÀç µ¹ °³¼ö >> ¡Û: " << bcount << " | ¡Ü:" << wcount << endl;
+	cout << "     A    B    C    D    E    F    G    H    " << endl<<endl;
+	cout << "í˜„ì¬ ëŒ ê°œìˆ˜ >> â—‹: " << bcount << " | â—:" << wcount << endl;
 	if (bcount == 0) {
-		cout << "¹éÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+		cout << "ë°±ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 		exit(0);
 	}
 	else if (wcount == 0) {
-		cout << "ÈæÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+		cout << "í‘ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 		exit(0);
 	}
 	else if (wcount + bcount == 64) {
-		cout << "´õ ÀÌ»ó µÑ °÷ÀÌ ¾ø½À´Ï´Ù. µ¹ÀÇ °³¼ö°¡ ´õ ¸¹Àº ÂÊÀÌ ½Â¸®ÇÕ´Ï´Ù." << endl << endl;
+		cout << "ë” ì´ìƒ ë‘˜ ê³³ì´ ì—†ìŠµë‹ˆë‹¤. ëŒì˜ ê°œìˆ˜ê°€ ë” ë§ì€ ìª½ì´ ìŠ¹ë¦¬í•©ë‹ˆë‹¤." << endl << endl;
 		if (wcount > bcount) {
-			cout << "¹éÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+			cout << "ë°±ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 			exit(0);
 		}
 		else if (bcount > wcount) {
-			cout << "ÈæÀÌ ÀÌ°å½À´Ï´Ù. °ÔÀÓÀ» Á¾·áÇÕ´Ï´Ù." << endl;
+			cout << "í‘ì´ ì´ê²¼ìŠµë‹ˆë‹¤. ê²Œì„ì„ ì¢…ë£Œí•©ë‹ˆë‹¤." << endl;
 			exit(0);
 		}
 		else
-			cout << "µ¹ÀÇ °³¼ö°¡ °°½À´Ï´Ù. ¹«½ÂºÎÀÔ´Ï´Ù." << endl; exit(0);
+			cout << "ëŒì˜ ê°œìˆ˜ê°€ ê°™ìŠµë‹ˆë‹¤. ë¬´ìŠ¹ë¶€ì…ë‹ˆë‹¤." << endl; exit(0);
 	}
 }
 
-int change_char(char y) { //ÀÔ·Â ¹Ş´Â°Å
+int change_char(char y) { //ì…ë ¥ ë°›ëŠ”ê±°
 	if (y == 'A' || y == 'a') {
 		return 0;
 	}
@@ -796,7 +805,7 @@ bool checkinput(node board[][8], int x, int y) {
 		return 0;
 	}
 }
-void change_Color() { //ÅÏ ¹Ù²Ş
+void change_Color() { //í„´ ë°”ê¿ˆ
 	if (color == 1) {
 		color = 2;
 	}
@@ -805,16 +814,16 @@ void change_Color() { //ÅÏ ¹Ù²Ş
 	}
 }
 
-void order() { // ´©±¸ ÅÏÀÎÁö ¾Ë·ÁÁÜ
+void order() { // ëˆ„êµ¬ í„´ì¸ì§€ ì•Œë ¤ì¤Œ
 	if (color == 1) {
-		cout << "¹é";
+		cout << "ë°±";
 	}
 	else {
-		cout << "Èæ";
+		cout << "í‘";
 	}
 }
 
-int white(node board[][8]) { //Èò »ö °¹¼ö ¼¼±â
+int white(node board[][8]) { //í° ìƒ‰ ê°¯ìˆ˜ ì„¸ê¸°
 	int wcount = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -826,7 +835,7 @@ int white(node board[][8]) { //Èò »ö °¹¼ö ¼¼±â
 	return wcount;
 }
 
-int black(node board[][8]) { //ºí·¢ °¹¼ö ¼¼±â
+int black(node board[][8]) { //ë¸”ë™ ê°¯ìˆ˜ ì„¸ê¸°
 	int bcount = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; i < 8; j++) {
