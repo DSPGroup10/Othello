@@ -18,7 +18,7 @@ bool checkpass(node board[][8]); //PASS 체크
 
 bool input(node board[][8], int x, int y); //보드판 위치를 입력 받고 작업 실행
 
-bool checkinput(node board[][8], int x, int y); 
+bool checkinput(node board[][8], int x, int y);
 
 void change_Color(); //입력이 성공적으로 종료 되었을 때 color를 바꿔주는 함수
 
@@ -97,6 +97,7 @@ int main(void) {
 					board[i][j].setUrc(NULL);
 					board[i][j].setDrc(NULL);
 					board[i][j].setLeft(&board[i][j - 1]);
+					board[i][j].setUlc(&board[i - 1][j - 1]);
 					board[i][j].setDlc(&board[i + 1][j - 1]);
 				}
 				else {
@@ -117,66 +118,50 @@ int main(void) {
 	board[3][4].setData(2);
 	board[4][3].setData(2);
 	board[4][4].setData(1);
-
+	
 	int x;
 	char y;
 	while (1) {
-		int exitnum = 0;
+		int exit = 0;
 		print_Board(board);
 		if (checkpass(board) == true)
-			exitnum++; 
+			exit++;
 		if (checkpass(board) == true)
-			exitnum++; 
-		
-		if (exitnum == 2) {
+			exit++;
+
+		if (exit == 2) {
 			int bcount = 0;
 			int wcount = 0;
-			cout << "양쪽 모두 돌을 놓을 수 없습니다. 승부를 판정합니다." << endl;
 			for (int i = 0; i < 8; i++) {
 				for (int j = 0; j < 8; j++) {
 					if (board[i][j].getData() == 1) {
-						 wcount++;
+						wcount++;
 					}
 					else if (board[i][j].getData() == 2) {
-						 bcount++;
+						bcount++;
 					}
 				}
 			}
-			if (bcount == 0) {
+			if (wcount > bcount) {
 				cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
-				Sleep(60000);
-				exit(0);
+				break;
 			}
-			else if (wcount == 0) {
+			else if (bcount > wcount) {
 				cout << "흑이 이겼습니다. 게임을 종료합니다." << endl;
-				Sleep(60000);
-				exit(0);
+				break;
 			}
-			else if (wcount + bcount == 64) {
-				cout << "더 이상 둘 곳이 없습니다. 돌의 개수가 더 많은 쪽이 승리합니다." << endl << endl;
-				if (wcount > bcount) {
-					cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
-					Sleep(60000);
-					exit(0);
-				}
-				else if (bcount > wcount) {
-					cout << "흑이 이겼습니다. 게임을 종료합니다." << endl;
-					Sleep(60000);
-					exit(0);
-				}
-				else
-					cout << "돌의 개수가 같습니다. 무승부입니다." << endl; Sleep(60000); exit(0);
-			}
+			else
+				cout << "돌의 개수가 같습니다. 무승부입니다." << endl; break;
 		}
 		cout << "(";
 		order();
-		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(숫자 영어 순으로 입력해주세요)...... "<<endl;
+		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(숫자 영어 순으로 입력해주세요)...... " << endl;
 		cout << "현재 놓을 수 있는 자리:";
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
 				if (checkinput(board, i, j) == true) {
 					char ch = j + 65;
-					cout << i+1<<ch<<" ";
+					cout << i + 1 << ch << " ";
 				}
 			}
 		}
@@ -198,12 +183,14 @@ int main(void) {
 			}
 		}
 	}
+	cout << "게임을 종료합니다." << endl;
+	Sleep(5000);
 	return 0;
 } // int main
 
 // pass check
 bool checkpass(node board[][8]) {
-	int checknum=0;
+	int checknum = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
 			if (checkinput(board, i, j) == false) {
@@ -220,7 +207,7 @@ bool checkpass(node board[][8]) {
 			print_Board(board);
 			return 1;
 		}
-		else if(color==1)
+		else if (color == 1)
 			cout << "백이 놓을 수 있는 자리가 없습니다. 차례를 넘깁니다." << endl; Sleep(2000);
 		change_Color();
 		system("cls");
@@ -261,30 +248,32 @@ void print_Board(node board[][8]) {
 		}
 		cout << endl << "   +----+----+----+----+----+----+----+----+ " << endl;
 	}
-	cout << "     A    B    C    D    E    F    G    H    " << endl<<endl;
+	cout << "     A    B    C    D    E    F    G    H    " << endl << endl;
 	cout << "현재 돌 개수 >> ○: " << bcount << " | ●:" << wcount << endl;
 	if (bcount == 0) {
 		cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
+		Sleep(5000);
+		exit(0);
 	}
 	else if (wcount == 0) {
 		cout << "흑이 이겼습니다. 게임을 종료합니다." << endl;
-		Sleep(60000);
+		Sleep(5000);
 		exit(0);
 	}
 	else if (wcount + bcount == 64) {
 		cout << "더 이상 둘 곳이 없습니다. 돌의 개수가 더 많은 쪽이 승리합니다." << endl << endl;
 		if (wcount > bcount) {
 			cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
-			Sleep(60000);
+			Sleep(5000);
 			exit(0);
 		}
 		else if (bcount > wcount) {
 			cout << "흑이 이겼습니다. 게임을 종료합니다." << endl;
-			Sleep(60000);
+			Sleep(5000);
 			exit(0);
 		}
 		else
-			cout << "돌의 개수가 같습니다. 무승부입니다." << endl; Sleep(60000); exit(0);
+			cout << "돌의 개수가 같습니다. 무승부입니다." << endl; Sleep(5000); exit(0);
 	}
 }
 
