@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <Windows.h>
 #include "node.h"
@@ -12,6 +11,10 @@ int color = 2; //백 순서에는 1 흑 순서에는 2 흑 시작이기에 초기값은 2
 void print_Board(node board[][8]); //출력 형식
 
 int change_char(char y); //세로를 표현하는 알파벳을 숫자로 맵핑
+
+bool checkpass(); //PASS 체크
+
+void pass(); //pass한다
 
 bool input(node board[][8], int x, int y); //보드판 위치를 입력 받고 작업 실행
 
@@ -118,6 +121,8 @@ int main(void) {
 	char y;
 	while (1) {
 		print_Board(board);
+		checkpass(); 
+		pass();
 		cout << "(";
 		order();
 		cout << ")차례입니다. 놓을 자리를 선택하여 주세요(가로 세로 순으로 입력해주세요)...... ";
@@ -125,20 +130,40 @@ int main(void) {
 		cin >> x >> y;
 
 		if (input(board, x - 1, change_char(y)) == true) {
-			//system("cls"); //cmd 초기화
+			system("cls"); //cmd 초기화
 		}
 		else {
 			while (1) {
 				cout << "돌을 놓을 수 없는 자리입니다. 다시 선택하여 주세요.....";
 				cin >> x >> y;
 				if (input(board, x - 1, change_char(y)) == true) {
-					//system("cls");
+					system("cls");
 					break;
 				}
 			}
 		}
 	}
 	return 0;
+} // int main
+
+// pass check
+bool checkpass() {
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+				if (input(board, i, j) == true) {
+					board[i][j].setData(0);
+					return true;
+				}
+		}
+	}
+	return false;
+}
+
+void pass() {
+	if (checkpass() == false) {
+		cout << " 돌을 놓을 수 없어 PASS합니다.";
+		change_Color();
+	}
 }
 
 void print_Board(node board[][8]) {
@@ -181,7 +206,7 @@ void print_Board(node board[][8]) {
 		exit(0);
 	}
 	else if (wcount + bcount == 64) {
-		cout << "더 이상 둘 곳이 없습니다. 돌의 개수가 더 많은 쪽이 승리합니다." << endl<<endl;
+		cout << "더 이상 둘 곳이 없습니다. 돌의 개수가 더 많은 쪽이 승리합니다." << endl << endl;
 		if (wcount > bcount) {
 			cout << "백이 이겼습니다. 게임을 종료합니다." << endl;
 			exit(0);
@@ -195,7 +220,7 @@ void print_Board(node board[][8]) {
 	}
 }
 
-int change_char(char y) {
+int change_char(char y) { //입력 받는거
 	if (y == 'A' || y == 'a') {
 		return 0;
 	}
@@ -529,7 +554,7 @@ bool input(node board[][8], int x, int y) {
 	}
 }
 
-void change_Color() {
+void change_Color() { //턴 바꿈
 	if (color == 1) {
 		color = 2;
 	}
@@ -538,7 +563,7 @@ void change_Color() {
 	}
 }
 
-void order() {
+void order() { // 누구 턴인지 알려줌
 	if (color == 1) {
 		cout << "백";
 	}
@@ -547,7 +572,7 @@ void order() {
 	}
 }
 
-int white(node board[][8]) {
+int white(node board[][8]) { //흰 색 갯수 세기
 	int wcount = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; j < 8; j++) {
@@ -559,7 +584,7 @@ int white(node board[][8]) {
 	return wcount;
 }
 
-int black(node board[][8]) {
+int black(node board[][8]) { //블랙 갯수 세기
 	int bcount = 0;
 	for (int i = 0; i < 8; i++) {
 		for (int j = 0; i < 8; j++) {
