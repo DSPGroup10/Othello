@@ -2,8 +2,11 @@
 #include <iostream>
 #include <Windows.h>
 #include "node.h"
-
-
+//main.cpp node.cpp node.h
+//김현일:turncheck, 현재 돌 개수 , 종료 조건 판단, 놓을 수 있는 위치 탐색, 에러 수정
+//서종원:8방향 링크드리스트, 맵핑, input함수, print함수, color 지정, 놓을 수 있는 위치 
+//변효상:아이디어 구상, Othello Prototype 제작
+//박재현:turnchek, ppt 및 문서 작업
 using namespace std;
 
 node board[8][8];
